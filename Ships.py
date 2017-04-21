@@ -9,8 +9,9 @@ class Ship():
         self.name = name
         
     def damage(self,damage):
-        if damage > self.defence:
-            self.health -= damage
+        netdamage = damage-self.defence
+        if netdamage > 0:
+            self.health -= netdamage
             return self.health
 
     def equip_weapon(self,weapon):
@@ -39,6 +40,10 @@ class Sensor():
     def __init__(self,name,value):
         self.name = name
         self.sensor = sensor
+
+
+
+
 
 
     
