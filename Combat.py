@@ -1,59 +1,65 @@
 from Ships import Ship,Weapon,Shield
+from util import fancyprint,fancyinput
+import util
 import random
 import time
 
 def combat():
     '''starts and ends a combat event'''
+    util.enemy=shipgen()
     in_combat=True
     while in_combat:
-        print ('')
-        print ('player health = '+str(player.health))
-        print ('enemy health = '+str(enemy.health))
+        fancyprint ('')
+        fancyprint ('player health = '+str(util.player.health)+'\n')
+        fancyprint ('enemy health = '+str(util.enemy.health)+'\n')
         command = fight_or_flight()
         if command == 'flight':
             in_combat = False
-            return
+            util.location[1]=0
+            return 1
         if command == 'fight':
             combat_loop(sensor_check())
-        if player.health < 1:
-            time.sleep(0.5)
-            print ('systems criti-')
-            print ('GAME OVER')
+        if util.player.health < 1:
+            time.sleep(1)
+            fancyprint ('systems criti-'+'\n')
+            fancyprint ('GAME OVER'+'\n')
+            util.state=9
             in_combat=False
-            return        
-        if enemy.health < 1:
-            time.sleep(0.5)
-            print ('You watch as the enemy ship breaks apart')
+            return 0     
+        if util.enemy.health < 1:
+            time.sleep(1)
+            fancyprint ('You watch as the enemy ship breaks apart'+'\n')
+            util.sector[util.cluster][util.location[1]].event = 'Nothing'
             in_combat=False
-            return
+            return 4
             
             
 def combat_loop(shiplist):
     '''the main combat loop where ships are damaged'''
-    if shiplist[1] == player:
-        print('the enemy ship lines up to attack!')
-        damage = combat_roll()+enemy.attack
-        player.damage(damage)
-        time.sleep(0.5)
-        print ('the attack does '+damagecalc(damage,player)+' damage!')
-        time.sleep(0.5)
-        print('we line up to attack')
-        time.sleep(0.5)
-        damage = combat_roll()+player.attack
-        enemy.damage(damage)
-        print ('the attack does '+damagecalc(damage,enemy)+' damage!')
+    if shiplist[1] == util.player:
+        fancyprint('the enemy ship lines up to attack!'+'\n')
+        damage = combat_roll()+util.enemy.attack
+        util.player.damage(damage)
+        time.sleep(1)
+        fancyprint ('the attack does '+damagecalc(damage,util.player)+' damage!'+'\n')
+        time.sleep(1)
+        fancyprint('we line up to attack'+'\n')
+        time.sleep(1)
+        damage = combat_roll()+util.player.attack
+        util.enemy.damage(damage)
+        fancyprint ('the attack does '+damagecalc(damage,util.enemy)+' damage!'+'\n')
     else:
-        print('we line up to attack')
-        damage = combat_roll()+player.attack
-        enemy.damage(damage)
-        time.sleep(0.5)
-        print ('the attack does '+damagecalc(damage,enemy)+' damage!')
-        time.sleep(0.5)
-        print('the enemy ship lines up to attack!')
-        time.sleep(0.5)
-        damage = combat_roll()+enemy.attack
-        player.damage(damage)
-        print ('the attack does '+damagecalc(damage,player)+' damage!')
+        fancyprint('we line up to attack'+'\n')
+        damage = combat_roll()+util.player.attack
+        util.enemy.damage(damage)
+        time.sleep(1)
+        fancyprint ('the attack does '+damagecalc(damage,util.enemy)+' damage!'+'\n')
+        time.sleep(1)
+        fancyprint('the enemy ship lines up to attack!'+'\n')
+        time.sleep(1)
+        damage = combat_roll()+util.enemy.attack
+        util.player.damage(damage)
+        fancyprint ('the attack does '+damagecalc(damage,util.player)+' damage!'+'\n')
 
 def damagecalc(damage,ship):
     '''returns net damage when above 0 as a string'''
@@ -65,11 +71,12 @@ def damagecalc(damage,ship):
 
 def fight_or_flight():
     '''allows player to either engage (or continue) or exit combat'''
-    command = input('orders captain?\n')    
+    fancyprint('Orders captain?\n')
+    command = fancyinput(['flee','attack'])    
     if command == 'flee':
         return 'flight'
     if command == 'attack':
-        return 'fight'    
+        return 'fight'  
         
 def combat_roll():
     '''a random dice roll that adds on to a ship's weapon stat'''
@@ -81,14 +88,16 @@ def combat_roll():
 
 def sensor_check():
     '''determines which ship starts combat'''
-    if enemy.sensor > player.sensor:
-        return [enemy,player]
+    if util.enemy.sensor > util.player.sensor:
+        return [util.enemy,util.player]
     else:
-        return [player,enemy]
+        return [util.player,util.enemy]
 
 def shipgen():
     '''generates a random enemy ship'''
-    enemy = Ship('new')
-    enemy.attack = random.randint(1,10)
-    enemy.defence = random.randint(1,10)
-    enemy.sensor = random.randint(1,2)
+    level = int(util.location[0]+random.randint(1,3))
+    util.enemy = Ship('Pirate')
+    util.enemy.attack = random.randint(1,level)
+    util.enemy.defence = random.randint(1,level)
+    util.enemy.sensor = random.randint(1,level)
+    return util.enemy
