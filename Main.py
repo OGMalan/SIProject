@@ -19,6 +19,8 @@ As part of the project a number of exploratory vessels have been launched to cha
 You are the captain of one of these vessels, the UNE: ''')
     name = input('')
     util.player = Ship(name)
+    util.player.health = 100
+    util.player.sensor = 100
     fancyprint('\nThe ')
     fancyprint(name)
     fancyprint(' is a state of the art vessel equipped with a cutting edge jump drive, as well as state of the art ')
@@ -33,12 +35,8 @@ You are the captain of one of these vessels, the UNE: ''')
             SMk1 = Shield('Mk1 Shield',3)
             util.player.equip_shield(SMk1)
             break
-        if freegear == 'sensors':
-            SensMk1 = Sensor('Mk1 Sensor Suite',3)
-            util.player.equip_sensor(SensMk1)
-            break
         else:
-            print("Invalid input, please choose either 'weapons', 'shields' or 'sensors'")
+            print("Invalid input, please choose either 'weapons' or 'shields'")
     print('')
     fancyprint ('''Your task is to map the all the systems in the ''')
     names = ('Alpha','Beta','Gamma','Delta','Epsilon','Zeta','Eta','Theta','Iota','Kappa','Lambda','Mu','Nu','Xi','Omicron','Pi','Rho','Sigma','Tau','Upsilon','Phi','Chi','Psi','Omega')
@@ -50,7 +48,8 @@ The sector has been arbitrarily arranged into 10 clusters, each containing a num
 The systems are all within range for short
 range jumps, but to move between clusters you will have to find and utilise hyperlanes.
 
-When you are finished investigating all the systems, or wish to abandon your mission, you can conduct a jump out of the sector. Keep in mind you will not be able to return when you do this.
+When you are finished investigating all the systems, or wish to abandon your mission, you can conduct a jump out of the sector.
+Keep in mind you will not be able to return when you do this.
 
 Good luck, captain.
 -end of transmission-
